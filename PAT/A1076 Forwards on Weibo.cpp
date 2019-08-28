@@ -1,4 +1,66 @@
 #include "bits/stdc++.h"
+#define MAXN 2000
+using namespace std;
+int n,Layer;
+bool inq[MAXN] = {false};
+struct node {
+    int id;
+    int layer;
+};
+vector<node> Adj[MAXN];
+
+int BFS(int s)
+{
+    node st;
+    int cnt = -1;
+    st.id = s;
+    st.layer = 0;
+    inq[s] = true;
+    queue<node> q;
+    q.push(st);
+    while(!q.empty()) {
+        node nFront = q.front();
+        q.pop();
+        for(int i=0; i<Adj[nFront.id].size(); i++) { //找关注i的节点
+            node nowNode = Adj[nFront.id][i];
+            nowNode.layer = nFront.layer + 1;
+            if(!inq[nowNode.id]&&nowNode.layer<=Layer) {
+                inq[nowNode.id] = true;
+                q.push(nowNode);
+                cnt++;
+            }
+        }
+    }
+    cout<<cnt<<endl;
+}
+
+int main()
+{
+    int e;
+    cin>>n>>Layer;
+    for(int i=1; i<=n; i++) {
+        int num;
+        cin>>num;
+        for(int j=0; j<num; j++) {
+            cin>>e;
+            node n;
+            n.id = i;
+            n.layer = 0;
+            Adj[e].push_back(n);
+        }
+    }
+    int qur;
+    cin>>qur;
+    for(int i=0; i<qur; i++) {
+        cin>>e;
+        fill(inq,inq+n+2,false);
+        BFS(e);
+    }
+    return 0;
+}
+
+/*
+#include "bits/stdc++.h"
 using namespace std;
 
 typedef struct student
@@ -107,3 +169,5 @@ int main()
     }
     return 0;
 }
+
+*/
