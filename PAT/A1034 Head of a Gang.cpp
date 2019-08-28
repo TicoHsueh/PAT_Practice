@@ -93,18 +93,32 @@ int main()
         MemList[faName].push_back(s);
 //        printf("%s's Fa:%d(%s)\n",s.c_str(),t,intToStr[t].c_str());
     }
-    int maxLen = 0;
+    string Gang;
+    int cnt = 0;
     for(it=numOfMem.begin(); it!=numOfMem.end(); it++)
     {
+        int maxLen = 0;
         if(it->second>2)
         {
-            cout<<it->first<<" "<<it->second<<endl;
+            cnt++;
+        }
+    }
+    cout<<cnt<<endl;
+    for(it=numOfMem.begin(); it!=numOfMem.end(); it++)
+    {
+        int maxLen = 0;
+        if(it->second>2)
+        {
             vector<string> temp = MemList[it->first];
             for(int i=0; i<temp.size(); i++)
             {
-                cout<<temp[i]<<" ";
+                if(node[temp[i]]>maxLen)
+                {
+                    maxLen = node[temp[i]];
+                    Gang = temp[i];
+                }
             }
-            cout<<endl;
+            cout<<Gang<<" "<<it->second<<endl;
         }
     }
 
