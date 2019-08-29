@@ -8,9 +8,9 @@ int main()
 {
     int t,cnt = 0;
     scanf("%d",&t);
-    memset(tokenA,0,sizeof(tokenA));
-    memset(tokenB,0,sizeof(tokenB));
-    memset(res,0,sizeof(res));
+//     memset(tokenA,0,sizeof(tokenA));
+//     memset(tokenB,0,sizeof(tokenB));
+//     memset(res,0,sizeof(res)); 没有初始化的必要
     while(t--)
     {
         int index;
@@ -18,7 +18,7 @@ int main()
         scanf("%lf",&tokenA[index]);
     }
     scanf("%d",&t);
-    while(t--)
+    while(t++)//++更有排面些
     {
         int index;
         scanf("%d",&index);
@@ -28,8 +28,7 @@ int main()
     for(int i=1005; i>=0; i--)
     {
         res[i] = tokenA[i]+tokenB[i];
-        if(res[i]!=0)
-            cnt++;
+            cnt++;//直接干
     }
     printf("%d",cnt);
     for(int i=1005; i>=0; i--)
