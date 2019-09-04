@@ -1,127 +1,93 @@
 #include "bits/stdc++.h"
 #define MAXN 3000
+#define INF 1000000000
 using namespace std;
-int N,K;
-map<string,int> node,numOfMem;
+map<string,int> strToInt;
 map<int,string> intToStr;
-map<string,vector<string> > MemList;
-set<string> nameSet;
-int father[MAXN];
-
-int findFather(int x)
-{
-    int a = x;
-    while(x!=father[x])
-    {
-        x = father[x];
-    }
-
-    while(a!=father[a])
-    {
-        int k = father[a];
-        father[a] = x;
-        a = k;
-    }
-    return x;
-}
-
-void init()
-{
-    for(int i=0; i<MAXN; i++)
-        father[i] = i;
-}
-
-void Union(int a,int b)
-{
-    int fa = findFather(a);
-    int fb = findFather(b);
-    if(fa!=fb)
-    {
-        father[fa] = fb;
-    }
-    return ;
-}
-
-int hashName(string s)
-{
-    int ans = 0;
-    for(int i=0; i<s.length(); i++)
-    {
-        ans += (s[i]-'A')*26 + i;
-    }
-    return ans;
-}
-
-int main()
-{
-    cin>>N>>K;
-    init();
-    for(int i=0; i<N; i++)
-    {
-        string nameA,nameB;
-        int Aid,Bid;
-        int length;
-        cin>>nameA>>nameB>>length;
-        Aid = hashName(nameA);
-        Bid = hashName(nameB);
-        intToStr[Aid] = nameA;
-        intToStr[Bid] = nameB;
-        Union(Aid,Bid);
-        if(node.count(nameA)==0)
-        {
-            node[nameA] = 0;
+map<string,int> Gang;//统计团伙信息 名字<->成员数
+int G[MAXN][MAXN];
+bool vis[MAXN] = {false};
+int nameID = 0;
+int n,m;
+int callLen[MAXN];
+int numMem = 0,totalCall = 0,head;
+void DFS(int index) {
+    if(!vis[index]) {
+        vis[index] = true;
+//    cout<<"curr:"<<index<<endl;
+        if(callLen[index]>callLen[head]) {
+            head = index;
         }
-        if(node.count(nameB)==0)
-        {
-            node[nameB] = 0;
-        }
-        node[nameA] += length;
-        node[nameB] += length;
-    }
-    map<string,int>::iterator it;
-    for(it=node.begin(); it!=node.end(); it++)
-    {
-        string s = it->first;
-        int id = hashName(s);
-        int t = findFather(id);
-        string faName = intToStr[t];
-        if(numOfMem.count(faName)==0)
-        {
-            numOfMem[faName] = 0;
-        }
-        numOfMem[faName]++;
-        MemList[faName].push_back(s);
-//        printf("%s's Fa:%d(%s)\n",s.c_str(),t,intToStr[t].c_str());
-    }
-    string Gang;
-    int cnt = 0;
-    for(it=numOfMem.begin(); it!=numOfMem.end(); it++)
-    {
-        int maxLen = 0;
-        if(it->second>2)
-        {
-            cnt++;
-        }
-    }
-    cout<<cnt<<endl;
-    for(it=numOfMem.begin(); it!=numOfMem.end(); it++)
-    {
-        int maxLen = 0;
-        if(it->second>2)
-        {
-            vector<string> temp = MemList[it->first];
-            for(int i=0; i<temp.size(); i++)
-            {
-                if(node[temp[i]]>maxLen)
-                {
-                    maxLen = node[temp[i]];
-                    Gang = temp[i];
-                }
+        for(int i=0; i<n; i++) {
+            if(G[index][i]!=INF) {
+//                cout<<intToStr[index]<<"->"<<intToStr[i];
+//                cout<<":"<<G[index][i]<<endl;
+                totalCall += G[index][i];
+                if(!vis[i])
+                    numMem++;
+//                cout<<"Num:"<<numMem<<endl;
+                G[i][index] = INF;
+                G[index][i] = INF;
+                DFS(i);
             }
-            cout<<Gang<<" "<<it->second<<endl;
         }
+
+//    }
+        return ;
     }
+}
 
+void DFS_Traverse() {
+    for (int i = 0; i < n; ++i) {
+//        if(!vis[i]) {
+        numMem = 1;
+        totalCall = 0;
+        head = i;
+        DFS(i);
+//        if(numMem>0) {
+//            cout<<"numMem"<<numMem<<endl;
+//            cout<<"Tcall:"<<totalCall<<endl;
+//        }
+        if(totalCall>m&&numMem>2) {
+            Gang[intToStr[head]] = numMem;
+        }
+//        }
+    }
+}
 
+void change(string name) {
+    if(strToInt.count(name)==0) {
+        strToInt[name] = nameID;
+        intToStr[nameID] = name;
+        nameID++;
+    }
+}
+
+int main() {
+    cin>>n>>m;
+    fill(G[0],G[0]+MAXN*MAXN,INF);
+    fill(callLen,callLen+n,0);
+    for(int i=0; i<n; i++) {
+        string nameA,nameB;
+        int length,idA,idB;
+        cin>>nameA>>nameB>>length;
+        change(nameA);
+        change(nameB);
+        idA = strToInt[nameA];
+        idB = strToInt[nameB];
+        if(G[idA][idB]==INF) {
+            G[idA][idB] = 0;
+            G[idB][idA] = 0;
+        }
+        G[idA][idB] += length;
+        G[idB][idA] += length;
+        callLen[idA] += length,callLen[idB] += length;
+    }
+    DFS_Traverse();
+    cout<<Gang.size()<<endl;
+    map<string, int>::iterator it;
+    for(it=Gang.begin(); it!=Gang.end(); it++) {
+        cout<<it->first<<" "<<it->second<<endl;
+    }
     return 0;
 }
