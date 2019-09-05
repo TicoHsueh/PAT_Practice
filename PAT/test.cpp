@@ -1,18 +1,19 @@
 #include "bits/stdc++.h"
 using namespace std;
-int data[20];
-bool cmp(int a,int b)
-{
-    return a>b;
-}
+map<string,int> mp;
 int main()
 {
-    int t;
-    cin>>t;
-    for(int i=0; i<t; i++)
-        cin>>data[i];
-    sort(data,data+t,cmp);
-    for(int i=0; i<t; i++)
-        cout<<data[i];
+    string temp;
+    int cnt = 0;
+    while(cin>>temp){
+        char c = getchar();
+        mp[temp] = cnt;
+        cnt++;
+        if(c=='\n') break;
+    }
+    map<string,int>::iterator it;
+    for(it=mp.begin();it!=mp.end();it++){
+        cout<<it->first<<" "<<it->second<<endl;
+    }
     return 0;
 }
