@@ -4,3 +4,8 @@
 *.o
 *.layout
 *.exe
+PAT/test.cpp
+PAT/PAT.layout
+PAT/PAT.cbp
+PAT/obj/Debug/A1034 Head of a Gang.o
+PAT/bin/Debug/PAT.exe
