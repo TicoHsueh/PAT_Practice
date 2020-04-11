@@ -11,7 +11,7 @@ int main()
     string s;
     char temp[1002];
     int dir = 0;
-    int minLen = 1000;
+    int testVal = 10;
     while(T--)
     {
         memset(temp,'\0',sizeof(temp));
